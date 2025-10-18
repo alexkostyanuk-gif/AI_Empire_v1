@@ -1,176 +1,202 @@
-# notion_agent.py
-# ==========================
-# NotionAgent — агент для взаимодействия с базой Notion.
-# Поддерживает автоматическое определение типов свойств:
-# status, select, multi_select, title, rich_text и т.д.
-# ==========================
+# agents/notion_agent.py
+# ============================================
+# NotionAgent — работа с Notion Database:
+# - Автоопределение типов свойств (status, select, multi_select, title, rich_text, number, checkbox)
+# - Валидация значений для status (только существующие опции)
+# - Ретраи на 429/5xx с экспоненциальной паузой
+# - Пагинация при чтении задач
+# - Обновление (refresh) схемы базы на лету
+# ============================================
+
+from __future__ import annotations
 
 import logging
+import time
+from typing import Any, Dict, List, Optional, Iterable
+
 from notion_client import Client
+from notion_client.helpers import is_full_block  # не обязателен, но полезен
 from agents.base_agent import BaseAgent
 
-class NotionAgent(BaseAgent):
-    """
-    Агент для взаимодействия с Notion API.
-    Поддерживает чтение и обновление страниц с автоопределением типов свойств.
-    """
 
+class NotionAgent(BaseAgent):
     def __init__(self, notion_token: str, database_id: str):
         super().__init__("NotionAgent")
         self.database_id = database_id
         self.notion = Client(auth=notion_token)
-        self.field_types = {}
+        self.field_types: Dict[str, str] = {}
+        self._status_options: Dict[str, set] = {}  # { "Status": {"Todo","In progress","Done"} }
+        self.refresh_schema()
 
-        # Загружаем схему базы при инициализации
+    # ---------- СХЕМА / МЕТАДАННЫЕ ----------
+
+    def refresh_schema(self) -> None:
+        """Загрузить схему базы и кэшировать типы свойств + опции статусов."""
         try:
-            logging.info("[NotionAgent] Fetching database schema...")
-            db_info = self.notion.databases.retrieve(database_id=self.database_id)
-            for name, prop in db_info["properties"].items():
-                self.field_types[name] = prop["type"]
-            logging.info(f"[NotionAgent] Loaded field types: {self.field_types}")
+            self.logger.info("[NotionAgent] Fetching database schema...")
+            db = self.notion.databases.retrieve(database_id=self.database_id)
+            props = db.get("properties", {})
+            self.field_types.clear()
+            self._status_options.clear()
+
+            for name, prop in props.items():
+                ptype = prop.get("type")
+                self.field_types[name] = ptype
+                if ptype == "status":
+                    opts = prop.get("status", {}).get("options", []) or []
+                    self._status_options[name] = {o.get("name") for o in opts if o.get("name")}
+            self.logger.info("[NotionAgent] Loaded field types: %s", self.field_types)
+            if self._status_options:
+                self.logger.info("[NotionAgent] Status options: %s", self._status_options)
         except Exception as e:
-            logging.error(f"[NotionAgent] Failed to load database schema: {e}")
+            self.logger.exception("[NotionAgent] Failed to load database schema: %s", e)
 
-    # ------------------------------
-    # Вспомогательные функции
-    # ------------------------------
+    # ---------- ВСПОМОГАТЕЛЬНОЕ ----------
 
-    def _build_property_payload(self, field_name: str, value):
-        """
-        Формирует корректную структуру properties для обновления страницы.
-        """
+    def _retry(self, fn, *args, **kwargs):
+        """Простой экспоненциальный ретрай для 429/5xx."""
+        max_attempts = 5
+        backoff = 0.8
+        for attempt in range(1, max_attempts + 1):
+            try:
+                return fn(*args, **kwargs)
+            except Exception as e:
+                msg = str(e).lower()
+                retriable = any(code in msg for code in (" 429", " 500", " 502", " 503", " 504"))
+                if attempt == max_attempts or not retriable:
+                    self.logger.exception("[NotionAgent] Request failed (no more retries): %s", e)
+                    raise
+                sleep_sec = round(backoff, 2)
+                self.logger.warning("[NotionAgent] Retrying after %ss (attempt %s/%s)...", sleep_sec, attempt, max_attempts)
+                time.sleep(sleep_sec)
+                backoff *= 1.8
+
+    @staticmethod
+    def _ensure_list(value: Any) -> List[str]:
+        if value is None:
+            return []
+        if isinstance(value, str):
+            return [v.strip() for v in value.split(",") if v.strip()]
+        if isinstance(value, Iterable):
+            return [str(v).strip() for v in value if str(v).strip()]
+        return [str(value)]
+
+    def _build_property_payload(self, field_name: str, value: Any) -> Dict[str, Any]:
+        """Сформировать корректное свойство Notion в зависимости от типа."""
         field_type = self.field_types.get(field_name, "rich_text")
 
         if field_type == "status":
+            # Валидация: имя статуса должно существовать среди опций
+            allowed = self._status_options.get(field_name, set())
+            if value not in allowed:
+                raise ValueError(
+                    f"Unsupported status '{value}' for field '{field_name}'. "
+                    f"Allowed: {sorted(allowed)}"
+                )
             return {"status": {"name": value}}
 
-        elif field_type == "select":
+        if field_type == "select":
             return {"select": {"name": value}}
 
-        elif field_type == "multi_select":
-            # поддерживает как list[str], так и строку через запятую
-            if isinstance(value, str):
-                value = [v.strip() for v in value.split(",")]
-            return {"multi_select": [{"name": v} for v in value]}
+        if field_type == "multi_select":
+            items = self._ensure_list(value)
+            return {"multi_select": [{"name": v} for v in items]}
 
-        elif field_type == "title":
+        if field_type == "title":
             return {"title": [{"text": {"content": str(value)}}]}
 
-        elif field_type == "rich_text":
+        if field_type == "rich_text":
             return {"rich_text": [{"text": {"content": str(value)}}]}
 
-        else:
-            logging.warning(f"[NotionAgent] Unsupported property type '{field_type}' for '{field_name}'")
-            return {"rich_text": [{"text": {"content": str(value)}}]}
+        if field_type == "number":
+            try:
+                number = float(value)
+            except Exception:
+                raise ValueError(f"Field '{field_name}' expects number, got: {value!r}")
+            return {"number": number}
 
-    def _extract_property_value(self, prop_obj: dict):
-        """
-        Извлекает значение свойства из объекта Notion property.
-        """
-        prop_type = prop_obj.get("type")
+        if field_type == "checkbox":
+            return {"checkbox": bool(value)}
 
+        # Fallback — безопасный rich_text
+        self.logger.warning("[NotionAgent] Unsupported property type '%s' for '%s'. Using rich_text.", field_type, field_name)
+        return {"rich_text": [{"text": {"content": str(value)}}]}
+
+    @staticmethod
+    def _extract_property_value(prop_obj: dict) -> Any:
+        """Достать значение свойства из объекта Notion."""
+        ptype = prop_obj.get("type")
         try:
-            if prop_type == "status":
-                return prop_obj["status"]["name"] if prop_obj["status"] else None
-            elif prop_type == "select":
-                return prop_obj["select"]["name"] if prop_obj["select"] else None
-            elif prop_type == "multi_select":
-                return [t["name"] for t in prop_obj["multi_select"]]
-            elif prop_type == "title":
-                return "".join([t["plain_text"] for t in prop_obj["title"]])
-            elif prop_type == "rich_text":
-                return "".join([t["plain_text"] for t in prop_obj["rich_text"]])
-            elif prop_type == "number":
-                return prop_obj["number"]
-            elif prop_type == "checkbox":
-                return prop_obj["checkbox"]
-            else:
-                return None
-        except Exception as e:
-            logging.warning(f"[NotionAgent] Failed to extract value for {prop_type}: {e}")
+            if ptype == "status":
+                return prop_obj["status"]["name"] if prop_obj.get("status") else None
+            if ptype == "select":
+                return prop_obj["select"]["name"] if prop_obj.get("select") else None
+            if ptype == "multi_select":
+                return [t["name"] for t in prop_obj.get("multi_select", [])]
+            if ptype == "title":
+                return "".join([t.get("plain_text", "") for t in prop_obj.get("title", [])])
+            if ptype == "rich_text":
+                return "".join([t.get("plain_text", "") for t in prop_obj.get("rich_text", [])])
+            if ptype == "number":
+                return prop_obj.get("number")
+            if ptype == "checkbox":
+                return prop_obj.get("checkbox")
+            return None
+        except Exception:
             return None
 
-    # ------------------------------
-    # Основные методы
-    # ------------------------------
+    # ---------- ОСНОВНЫЕ ОПЕРАЦИИ ----------
 
-    def list_tasks(self, limit: int = 20):
-        """
-        Возвращает список задач (страниц) из базы Notion.
-        """
-        try:
-            query = self.notion.databases.query(
+    def list_tasks(self, limit: int = 20) -> List[Dict[str, Any]]:
+        """Вернуть первые N задач с распакованными полями."""
+        collected: List[Dict[str, Any]] = []
+        next_cursor: Optional[str] = None
+
+        while len(collected) < limit:
+            page_size = min(100, limit - len(collected))
+            resp = self._retry(
+                self.notion.databases.query,
                 **{
                     "database_id": self.database_id,
-                    "page_size": limit
+                    "page_size": page_size,
+                    **({"start_cursor": next_cursor} if next_cursor else {}),
                 }
             )
-            results = []
-            for page in query["results"]:
+            for page in resp.get("results", []):
                 item = {"id": page["id"]}
-                for name, prop in page["properties"].items():
+                for name, prop in page.get("properties", {}).items():
                     item[name] = self._extract_property_value(prop)
-                results.append(item)
-            return results
-        except Exception as e:
-            logging.error(f"[NotionAgent] Failed to list tasks: {e}")
-            return []
+                collected.append(item)
+                if len(collected) >= limit:
+                    break
+            if not resp.get("has_more"):
+                break
+            next_cursor = resp.get("next_cursor")
 
-    def update_property(self, page_id: str, field_name: str, value):
-        """
-        Обновляет указанное свойство страницы.
-        Автоматически определяет тип и формирует корректную структуру.
-        """
-        try:
-            data = self._build_property_payload(field_name, value)
-            self.notion.pages.update(
-                page_id=page_id,
-                properties={field_name: data}
-            )
-            logging.info(f"[NotionAgent] Updated '{field_name}' → '{value}' ({self.field_types.get(field_name)})")
-        except Exception as e:
-            logging.error(f"[NotionAgent] Failed to update '{field_name}': {e}")
+        return collected
 
-    def get_task_status(self, page_id: str):
-        """
-        Возвращает статус задачи по ID страницы.
-        """
-        try:
-            page = self.notion.pages.retrieve(page_id=page_id)
-            for name, prop in page["properties"].items():
-                if self.field_types.get(name) == "status":
-                    return self._extract_property_value(prop)
-            return None
-        except Exception as e:
-            logging.error(f"[NotionAgent] Failed to get task status: {e}")
-            return None
+    def update_property(self, page_id: str, field_name: str, value: Any) -> None:
+        """Обновить одно свойство страницы (тип определяется автоматически)."""
+        payload = self._build_property_payload(field_name, value)
+        self._retry(
+            self.notion.pages.update,
+            page_id=page_id,
+            properties={field_name: payload},
+        )
+        self.logger.info("[NotionAgent] Updated %s → %r (%s)", field_name, value, self.field_types.get(field_name))
 
-    def set_task_status(self, page_id: str, new_status: str):
-        """
-        Устанавливает новый статус задачи (ищет первое поле типа 'status').
-        """
-        try:
-            status_field = next((name for name, t in self.field_types.items() if t == "status"), None)
-            if not status_field:
-                logging.warning("[NotionAgent] No status field found in database.")
-                return
-            self.update_property(page_id, status_field, new_status)
-        except Exception as e:
-            logging.error(f"[NotionAgent] Failed to set task status: {e}")
+    def get_task_status(self, page_id: str) -> Optional[str]:
+        """Вернуть значение первого поля типа status на странице."""
+        page = self._retry(self.notion.pages.retrieve, page_id=page_id)
+        for name, prop in page.get("properties", {}).items():
+            if self.field_types.get(name) == "status":
+                return self._extract_property_value(prop)
+        return None
 
-# ==========================
-# Пример использования
-# ==========================
-if __name__ == "__main__":
-    import os
-
-    NOTION_TOKEN = os.getenv("NOTION_TOKEN")
-    DATABASE_ID = os.getenv("NOTION_DATABASE_ID")
-
-    if not NOTION_TOKEN or not DATABASE_ID:
-        print("❌ Please set NOTION_TOKEN and NOTION_DATABASE_ID environment variables.")
-    else:
-        agent = NotionAgent(NOTION_TOKEN, DATABASE_ID)
-        tasks = agent.list_tasks(limit=5)
-        for t in tasks:
-            print(t)
+    def set_task_status(self, page_id: str, new_status: str) -> None:
+        """Установить статус (первое поле типа 'status')."""
+        status_field = next((n for n, t in self.field_types.items() if t == "status"), None)
+        if not status_field:
+            self.logger.warning("[NotionAgent] No status field found in database.")
+            return
+        self.update_property(page_id, status_field, new_status)

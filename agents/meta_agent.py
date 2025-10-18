@@ -1,44 +1,57 @@
+# agents/meta_agent.py
+from __future__ import annotations
 
-from typing import Dict, Any, Optional
+import logging
+from typing import Any, Dict, Callable
 
 from agents.base_agent import BaseAgent
-from agents.memory_manager import MemoryManager
-from utils.helpers import extract_ordinal, normalize_text
-from utils.logger import log_info
+
 
 class MetaAgent(BaseAgent):
-    """Central coordinator ('Emperor'). Handles natural commands and routes to sub-agents."""
+    """
+    Координатор: регистрирует агентов и роутит команды.
+    Поддерживаемые команды:
+      - notion.list_tasks {limit}
+      - notion.update_property {page_id, field, value}
+      - notion.set_status {page_id, status}
+    """
+
     def __init__(self):
-        super().__init__(name="MetaAgent")
-        self.memory = MemoryManager()
+        super().__init__("MetaAgent")
+        self._agents: Dict[str, BaseAgent] = {}
+        self._handlers: Dict[str, Callable[[Dict[str, Any]], Any]] = {}
 
-    def execute(self, command_text: str, tasks: Optional[list] = None) -> Dict[str, Any]:
-        t = normalize_text(command_text)
+    # ---------- регистрация ----------
 
-        # Try a known pattern first
-        known = self.memory.recall_best(t)
-        if known and known.get("confidence", 0) >= 0.5:
-            plan = {"action": "mapped", "mapped_to": known["mapped_to"], "confidence": known["confidence"]}
-            self.memory.remember_pattern(t, known["mapped_to"], success=True)
-            return {"ok": True, "plan": plan, "note": "pattern-applied"}
+    def register(self, name: str, agent: BaseAgent) -> None:
+        self._agents[name] = agent
+        self.logger.info("[MetaAgent] Registered agent '%s' (%s)", name, agent.__class__.__name__)
+        # Авто-регистрация notion-хендлеров
+        if name == "notion":
+            self._register_notion_handlers(agent)
 
-        # Heuristic: look for ordinal task reference
-        idx = extract_ordinal(t)
-        if idx is not None and tasks:
-            if idx == -1:
-                real_idx = len(tasks) - 1
-            else:
-                real_idx = idx
-            if 0 <= real_idx < len(tasks):
-                task_id = tasks[real_idx].get("id", real_idx)
-                plan = {"action": "update_task_status", "task_id": task_id, "new_status": "Done"}
-                self.memory.remember_pattern(t, f"update_task_status:{task_id}:Done", success=True)
-                return {"ok": True, "plan": plan, "note": "heuristic-ordinal"}
+    def _register_notion_handlers(self, notion_agent: BaseAgent) -> None:
+        from agents.notion_agent import NotionAgent  # локальный импорт для типов
+        assert isinstance(notion_agent, NotionAgent)
 
-        # Fallback: ask LLM to draft plan (mocked if no API key)
-        sys = "Ты планировщик. Верни JSON-план действий без лишних слов."
-        llm = self.run(command_text, system_prompt=sys).content
-        self.memory.remember_pattern(t, "llm_plan", success=False)
-        return {"ok": True, "plan": {"llm": llm}, "note": "fallback-llm"}
-    # test sync
+        self._handlers["notion.list_tasks"] = lambda p: notion_agent.list_tasks(limit=int(p.get("limit", 20)))
+        self._handlers["notion.update_property"] = lambda p: notion_agent.update_property(
+            page_id=p["page_id"], field_name=p["field"], value=p["value"]
+        )
+        self._handlers["notion.set_status"] = lambda p: notion_agent.set_task_status(
+            page_id=p["page_id"], new_status=p["status"]
+        )
+
+    # ---------- API ----------
+
+    def handle(self, *args, **kwargs):
+        """Не используется напрямую — вызывай route()."""
+        return None
+
+    def route(self, command: str, payload: Dict[str, Any]) -> Any:
+        handler = self._handlers.get(command)
+        if not handler:
+            raise ValueError(f"Unknown command: {command}")
+        self.logger.info("[MetaAgent] → %s %s", command, {k: v for k, v in payload.items() if k != 'value'})
+        return handler(payload)
 
