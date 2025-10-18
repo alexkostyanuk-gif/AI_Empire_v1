@@ -1,0 +1,25 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.db
+*.log
+*.egg-info/
+
+# Virtual environments (на уровень выше)
+../.venv/
+
+# IDE
+.vscode/
+.idea/
+
+# System files
+.DS_Store
+Thumbs.db
+
+# Secrets
+.env
+*.json
+token_*
+secret_*
