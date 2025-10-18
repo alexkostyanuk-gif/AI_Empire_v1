@@ -1,27 +1,37 @@
-
 import asyncio
-from typing import Optional
-
+import logging
 from agents.base_agent import BaseAgent
 from agents.memory_manager import MemoryManager
-from config import TRAIN_INTERVAL_SEC, CONFIDENCE_DECAY
-from utils.logger import log_info
 
 class TrainAgent(BaseAgent):
-    def __init__(self, name: str = "TrainAgent"):
-        super().__init__(name=name)
+    def __init__(self):
+        super().__init__("TrainAgent")
+        self.memory_manager = MemoryManager()  # ✅ менеджер памяти
+        self.logger.info("[TrainAgent] initialized successfully.")
 
-    async def run_background_training(self, interval: Optional[int] = None):
-        interval = interval or TRAIN_INTERVAL_SEC
-        mem = MemoryManager()
+    async def run_background_training(self):
+        """Асинхронный цикл периодического обучения."""
         while True:
-            await self.train_once(mem)
-            await asyncio.sleep(interval)
+            self.logger.info("[TRAIN] Updating experience: decay + metrics")
+            self.run_cycle()
+            await asyncio.sleep(10)
 
-    async def train_once(self, mem: MemoryManager):
-        log_info("[TRAIN] Updating experience: decay + metrics")
-        for p in mem.data.get("patterns", []):
-            p["confidence"] = max(0.0, p.get("confidence", 0.5) * CONFIDENCE_DECAY)
-        mem.update_stats(adaptivity=0.55)
-        mem.save()
-        log_info("[TRAIN] Done")
+    def run_cycle(self):
+        """Запускает один цикл обучения."""
+        self.logger.info("[TRAIN] Starting training cycle...")
+        try:
+            memory = self.memory_manager.load()
+
+            # Фиктивное обновление уверенности в паттернах
+            if "patterns" in memory and isinstance(memory["patterns"], list):
+                for pattern in memory["patterns"]:
+                    pattern["confidence"] = max(
+                        0.1, pattern.get("confidence", 1.0) * 0.98
+                    )
+
+            self.memory_manager.save(memory)
+            self.logger.info("[TRAIN] Training cycle completed successfully.")
+            return {"ok": True, "patterns": len(memory.get("patterns", []))}
+        except Exception as e:
+            self.logger.exception(f"[TRAIN] Failed during training cycle: {e}")
+            return {"error": str(e)}

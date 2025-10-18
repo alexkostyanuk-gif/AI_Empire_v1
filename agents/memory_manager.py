@@ -12,6 +12,10 @@ class MemoryManager:
         self.path = Path(path)
         self.data = self._load()
         log_info(f"Memory loaded: patterns={len(self.data.get('patterns', []))}")
+    def load(self):
+        """Публичная обёртка над _load() — возвращает текущее состояние памяти."""
+        return self._load()
+
 
     def _load(self) -> Dict[str, Any]:
         if not self.path.exists():

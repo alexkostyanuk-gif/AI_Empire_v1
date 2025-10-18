@@ -39,3 +39,5 @@ class Settings:
 
 # --- Глобальный экземпляр ---
 settings = Settings()
+PROGRESS_REPORT = "storage/progress_report.json"
+
