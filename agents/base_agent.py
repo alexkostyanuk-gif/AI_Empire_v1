@@ -1,8 +1,9 @@
 import uuid
 from dataclasses import dataclass
 from typing import List, Dict, Any, Optional
+from config import DEFAULT_MODEL
 
-from config import DEFAULT_MODEL, MAX_TOKENS, OPENAI_API_KEY
+
 from utils.logger import log_info, log_warn
 
 # --- Новый клиент OpenAI SDK v1.x ---
@@ -30,13 +31,22 @@ class LLMResponse:
     model: str
 
 
+import logging
+from utils.logger import setup_logging
+
 class BaseAgent:
-    """Базовый агент: единая точка общения с GPT-5."""
-    def __init__(self, name: str = "UnnamedAgent", model: Optional[str] = None):
+    def __init__(self, name: str):
         self.name = name
-        self.model = model or DEFAULT_MODEL
-        self._mock = MockLLM()
-        log_info(f"Agent '{self.name}' initialized with model={self.model}")
+
+        # Настраиваем логгер для агента
+        setup_logging()
+        self.logger = logging.getLogger(name)
+        self.logger.info(f"[{self.name}] initialized successfully.")
+
+        # Другие твои атрибуты (если есть)
+        self.memory = None
+        self.model = None
+
 
     def run(self, prompt: str, system_prompt: Optional[str] = None) -> LLMResponse:
         """Выполняет обращение к GPT-5 и возвращает ответ."""

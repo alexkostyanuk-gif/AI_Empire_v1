@@ -42,3 +42,11 @@ def setup_logging(level: int = logging.INFO, log_dir: str = "logs") -> None:
     root.addHandler(file_handler)
 
     logging.info("✅ Logging initialized")
+# --- Backward compatibility ---
+def log_info(message: str) -> None:
+    """Совместимость со старыми агентами."""
+    logging.getLogger().info(message)
+
+def log_warn(message: str) -> None:
+    """Совместимость со старыми агентами."""
+    logging.getLogger().warning(message)
