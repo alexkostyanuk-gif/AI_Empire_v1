@@ -1,0 +1,17 @@
+{
+  "patterns": [
+    {
+      "input": "поменяй во второй задаче статус на сделано",
+      "mapped_to": "llm_plan",
+      "confidence": 0.1,
+      "usage_count": 7,
+      "last_used": "2025-10-18T13:59:27.032800Z"
+    }
+  ],
+  "stats": {
+    "accuracy": 0.0,
+    "adaptivity": 0.54892578125,
+    "reliability": 0.0,
+    "total_experience": 9.0
+  }
+}

@@ -1,0 +1,22 @@
+2025-10-18 18:56:46 | INFO | root | ✅ Logging initialized
+2025-10-18 18:56:46 | INFO | MetaAgent | [MetaAgent] initialized successfully.
+2025-10-18 18:56:46 | INFO | MetaAgent | [MetaAgent] initialized successfully.
+2025-10-18 18:56:46 | INFO | root | ✅ Logging initialized
+2025-10-18 18:56:46 | INFO | NotionAgent | [NotionAgent] initialized successfully.
+2025-10-18 18:56:46 | INFO | NotionAgent | [NotionAgent] Initializing and refreshing schema...
+2025-10-18 18:56:46 | INFO | NotionAgent | [NotionAgent] Fetching database schema...
+2025-10-18 18:56:47 | INFO | httpx | HTTP Request: GET https://api.notion.com/v1/databases/28abfded001c8008ace0c0f93a3ba0af "HTTP/1.1 200 OK"
+2025-10-18 18:56:47 | INFO | NotionAgent | [NotionAgent] Schema loaded successfully.
+2025-10-18 18:56:47 | INFO | root | ✅ Logging initialized
+2025-10-18 18:56:47 | INFO | TrainAgent | [TrainAgent] initialized successfully.
+2025-10-18 18:59:42 | INFO | root | ✅ Logging initialized
+2025-10-18 18:59:42 | INFO | MetaAgent | [MetaAgent] initialized successfully.
+2025-10-18 18:59:42 | INFO | MetaAgent | [MetaAgent] initialized successfully.
+2025-10-18 18:59:42 | INFO | root | ✅ Logging initialized
+2025-10-18 18:59:42 | INFO | NotionAgent | [NotionAgent] initialized successfully.
+2025-10-18 18:59:42 | INFO | NotionAgent | [NotionAgent] Initializing and refreshing schema...
+2025-10-18 18:59:42 | INFO | NotionAgent | [NotionAgent] Fetching database schema...
+2025-10-18 18:59:43 | INFO | httpx | HTTP Request: GET https://api.notion.com/v1/databases/28abfded001c8008ace0c0f93a3ba0af "HTTP/1.1 200 OK"
+2025-10-18 18:59:43 | INFO | NotionAgent | [NotionAgent] Schema loaded successfully.
+2025-10-18 18:59:43 | INFO | root | ✅ Logging initialized
+2025-10-18 18:59:43 | INFO | TrainAgent | [TrainAgent] initialized successfully.

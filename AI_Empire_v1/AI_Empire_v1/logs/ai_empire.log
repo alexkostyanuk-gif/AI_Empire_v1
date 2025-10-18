@@ -1,0 +1,184 @@
+2025-10-18 18:23:09 | INFO | root | ✅ Logging initialized
+2025-10-18 18:23:09 | INFO | NotionAgent | [NotionAgent] initialized successfully.
+2025-10-18 18:23:10 | INFO | NotionAgent | [NotionAgent] Initializing and refreshing schema...
+2025-10-18 18:23:10 | INFO | NotionAgent | [NotionAgent] Fetching database schema...
+2025-10-18 18:23:21 | INFO | httpx | HTTP Request: GET https://api.notion.com/v1/databases/28abfded001c8008ace0c0f93a3ba0af "HTTP/1.1 200 OK"
+2025-10-18 18:23:21 | INFO | NotionAgent | [NotionAgent] Schema loaded successfully.
+2025-10-18 18:52:43 | INFO | root | ✅ Logging initialized
+2025-10-18 18:52:43 | INFO | MetaAgent | [MetaAgent] initialized successfully.
+2025-10-18 18:52:43 | INFO | root | ✅ Logging initialized
+2025-10-18 18:52:43 | INFO | TrainAgent | [TrainAgent] initialized successfully.
+2025-10-18 18:52:43 | INFO | root | Memory loaded: patterns=1
+2025-10-18 18:52:43 | INFO | root | [TRAIN] Updating experience: decay + metrics
+2025-10-18 18:52:43 | INFO | root | [TRAIN] Done
+2025-10-18 18:58:23 | INFO | root | ✅ Logging initialized
+2025-10-18 18:58:23 | INFO | MetaAgent | [MetaAgent] initialized successfully.
+2025-10-18 18:58:23 | INFO | MetaAgent | [MetaAgent] initialized successfully.
+2025-10-18 18:58:23 | INFO | root | ✅ Logging initialized
+2025-10-18 18:58:23 | INFO | NotionAgent | [NotionAgent] initialized successfully.
+2025-10-18 18:58:23 | INFO | NotionAgent | [NotionAgent] Initializing and refreshing schema...
+2025-10-18 18:58:23 | INFO | NotionAgent | [NotionAgent] Fetching database schema...
+2025-10-18 18:58:24 | INFO | httpx | HTTP Request: GET https://api.notion.com/v1/databases/28abfded001c8008ace0c0f93a3ba0af "HTTP/1.1 200 OK"
+2025-10-18 18:58:24 | INFO | NotionAgent | [NotionAgent] Schema loaded successfully.
+2025-10-18 18:58:24 | INFO | root | ✅ Logging initialized
+2025-10-18 18:58:24 | INFO | TrainAgent | [TrainAgent] initialized successfully.
+2025-10-18 19:08:32 | INFO | root | ✅ Logging initialized
+2025-10-18 19:08:32 | INFO | MetaAgent | [MetaAgent] initialized successfully.
+2025-10-18 19:08:32 | INFO | MetaAgent | [MetaAgent] initialized successfully.
+2025-10-18 19:08:32 | INFO | root | ✅ Logging initialized
+2025-10-18 19:08:32 | INFO | NotionAgent | [NotionAgent] initialized successfully.
+2025-10-18 19:08:33 | INFO | NotionAgent | [NotionAgent] Initializing and refreshing schema...
+2025-10-18 19:08:33 | INFO | NotionAgent | [NotionAgent] Fetching database schema...
+2025-10-18 19:08:45 | INFO | httpx | HTTP Request: GET https://api.notion.com/v1/databases/28abfded001c8008ace0c0f93a3ba0af "HTTP/1.1 200 OK"
+2025-10-18 19:08:47 | INFO | NotionAgent | [NotionAgent] Schema loaded successfully.
+2025-10-18 19:08:47 | INFO | root | ✅ Logging initialized
+2025-10-18 19:08:47 | INFO | TrainAgent | [TrainAgent] initialized successfully.
+2025-10-18 19:08:47 | INFO | root | ✅ Logging initialized
+2025-10-18 19:08:47 | INFO | TrainAgent | [TrainAgent] initialized successfully.
+2025-10-18 19:08:47 | INFO | MetaAgent | [MetaAgent] Executing command: поменяй во второй задаче статус на сделано | args={'tasks': [{'id': 'task-001', 'title': 'Сделать интеграцию Telegram'}, {'id': 'task-002', 'title': 'Добавить поддержку Notion'}, {'id': 'task-003', 'title': 'Сделать отчётность'}]}
+2025-10-18 19:08:47 | WARNING | MetaAgent | [MetaAgent] Unknown command: поменяй во второй задаче статус на сделано
+2025-10-18 19:08:47 | INFO | root | Execute result: {'error': 'Unknown command: поменяй во второй задаче статус на сделано'}
+2025-10-18 19:08:47 | INFO | root | Progress report written: storage/progress_report.json
+2025-10-18 19:08:47 | INFO | root | Memory loaded: patterns=1
+2025-10-18 19:08:47 | INFO | root | [TRAIN] Updating experience: decay + metrics
+2025-10-18 19:08:47 | INFO | root | [TRAIN] Done
+2025-10-18 19:10:12 | INFO | root | ✅ Logging initialized
+2025-10-18 19:10:12 | INFO | root | ✅ Logging initialized
+2025-10-18 19:10:12 | INFO | MetaAgent | [MetaAgent] initialized successfully.
+2025-10-18 19:10:12 | INFO | MetaAgent | [MetaAgent] initialized successfully.
+2025-10-18 19:10:12 | INFO | root | ✅ Logging initialized
+2025-10-18 19:10:12 | INFO | NotionAgent | [NotionAgent] initialized successfully.
+2025-10-18 19:10:13 | INFO | NotionAgent | [NotionAgent] Initializing and refreshing schema...
+2025-10-18 19:10:13 | INFO | NotionAgent | [NotionAgent] Fetching database schema...
+2025-10-18 19:10:14 | INFO | httpx | HTTP Request: GET https://api.notion.com/v1/databases/28abfded001c8008ace0c0f93a3ba0af "HTTP/1.1 200 OK"
+2025-10-18 19:10:14 | INFO | NotionAgent | [NotionAgent] Schema loaded successfully.
+2025-10-18 19:10:14 | INFO | root | ✅ Logging initialized
+2025-10-18 19:10:14 | INFO | TrainAgent | [TrainAgent] initialized successfully.
+2025-10-18 19:10:14 | INFO | MetaAgent | [MetaAgent] Executing command: notion.list_tasks | args={}
+2025-10-18 19:10:14 | INFO | NotionAgent | [NotionAgent] Fetching last 5 tasks from Notion...
+2025-10-18 19:10:14 | ERROR | NotionAgent | [NotionAgent] Failed to list tasks: 'NotionAgent' object has no attribute 'client'
+Traceback (most recent call last):
+  File "D:\AI_Empire_v1\AI_Empire_v1\agents\notion_agent.py", line 37, in list_tasks
+    response = self.client.databases.query(
+               ^^^^^^^^^^^
+AttributeError: 'NotionAgent' object has no attribute 'client'
+2025-10-18 19:10:14 | INFO | MetaAgent | [MetaAgent] Command 'notion.list_tasks' executed successfully.
+2025-10-18 19:10:14 | INFO | MetaAgent | [MetaAgent] Executing command: train.run | args={}
+2025-10-18 19:10:14 | INFO | TrainAgent | [TRAIN] Starting training cycle...
+2025-10-18 19:10:14 | ERROR | TrainAgent | [TRAIN] Failed during training cycle: 'TrainAgent' object has no attribute 'memory_manager'
+Traceback (most recent call last):
+  File "D:\AI_Empire_v1\AI_Empire_v1\agents\train_agent.py", line 36, in run_cycle
+    memory = self.memory_manager.load()
+             ^^^^^^^^^^^^^^^^^^^
+AttributeError: 'TrainAgent' object has no attribute 'memory_manager'
+2025-10-18 19:10:14 | INFO | MetaAgent | [MetaAgent] Command 'train.run' executed successfully.
+2025-10-18 19:10:14 | INFO | root | Progress report written: storage/progress_report.json
+2025-10-18 19:12:50 | INFO | root | ✅ Logging initialized
+2025-10-18 19:12:50 | INFO | root | ✅ Logging initialized
+2025-10-18 19:12:50 | INFO | MetaAgent | [MetaAgent] initialized successfully.
+2025-10-18 19:12:50 | INFO | MetaAgent | [MetaAgent] initialized successfully.
+2025-10-18 19:12:50 | INFO | root | ✅ Logging initialized
+2025-10-18 19:12:50 | INFO | NotionAgent | [NotionAgent] initialized successfully.
+2025-10-18 19:12:50 | INFO | NotionAgent | [NotionAgent] initialized successfully.
+2025-10-18 19:12:50 | INFO | NotionAgent | [NotionAgent] Initializing and refreshing schema...
+2025-10-18 19:12:50 | INFO | NotionAgent | [NotionAgent] Fetching database schema...
+2025-10-18 19:12:51 | INFO | httpx | HTTP Request: GET https://api.notion.com/v1/databases/28abfded001c8008ace0c0f93a3ba0af "HTTP/1.1 200 OK"
+2025-10-18 19:12:51 | INFO | NotionAgent | [NotionAgent] Schema loaded successfully.
+2025-10-18 19:12:51 | INFO | root | ✅ Logging initialized
+2025-10-18 19:12:51 | INFO | TrainAgent | [TrainAgent] initialized successfully.
+2025-10-18 19:12:51 | INFO | root | Memory loaded: patterns=1
+2025-10-18 19:12:51 | INFO | TrainAgent | [TrainAgent] initialized successfully.
+2025-10-18 19:12:51 | INFO | MetaAgent | [MetaAgent] Executing command: notion.list_tasks | args={}
+2025-10-18 19:12:51 | INFO | NotionAgent | [NotionAgent] Fetching last 5 tasks from Notion...
+2025-10-18 19:12:51 | INFO | httpx | HTTP Request: POST https://api.notion.com/v1/databases/28abfded001c8008ace0c0f93a3ba0af/query "HTTP/1.1 200 OK"
+2025-10-18 19:12:51 | INFO | NotionAgent | [NotionAgent] Retrieved 2 tasks successfully.
+2025-10-18 19:12:51 | INFO | MetaAgent | [MetaAgent] Command 'notion.list_tasks' executed successfully.
+2025-10-18 19:12:51 | INFO | MetaAgent | [MetaAgent] Executing command: train.run | args={}
+2025-10-18 19:12:51 | INFO | TrainAgent | [TRAIN] Starting training cycle...
+2025-10-18 19:12:51 | ERROR | TrainAgent | [TRAIN] Failed during training cycle: 'MemoryManager' object has no attribute 'load'
+Traceback (most recent call last):
+  File "D:\AI_Empire_v1\AI_Empire_v1\agents\train_agent.py", line 23, in run_cycle
+    memory = self.memory_manager.load()
+             ^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'MemoryManager' object has no attribute 'load'. Did you mean: '_load'?
+2025-10-18 19:12:51 | INFO | MetaAgent | [MetaAgent] Command 'train.run' executed successfully.
+2025-10-18 19:12:51 | INFO | root | Progress report written: storage/progress_report.json
+2025-10-18 19:16:32 | INFO | root | ✅ Logging initialized
+2025-10-18 19:16:32 | INFO | root | ✅ Logging initialized
+2025-10-18 19:16:32 | INFO | MetaAgent | [MetaAgent] initialized successfully.
+2025-10-18 19:16:32 | INFO | MetaAgent | [MetaAgent] initialized successfully.
+2025-10-18 19:16:32 | INFO | root | ✅ Logging initialized
+2025-10-18 19:16:32 | INFO | NotionAgent | [NotionAgent] initialized successfully.
+2025-10-18 19:16:32 | INFO | NotionAgent | [NotionAgent] initialized successfully.
+2025-10-18 19:16:32 | INFO | NotionAgent | [NotionAgent] Initializing and refreshing schema...
+2025-10-18 19:16:32 | INFO | NotionAgent | [NotionAgent] Fetching database schema...
+2025-10-18 19:16:47 | INFO | httpx | HTTP Request: GET https://api.notion.com/v1/databases/28abfded001c8008ace0c0f93a3ba0af "HTTP/1.1 200 OK"
+2025-10-18 19:16:47 | INFO | NotionAgent | [NotionAgent] Schema loaded successfully.
+2025-10-18 19:16:47 | INFO | root | ✅ Logging initialized
+2025-10-18 19:16:47 | INFO | TrainAgent | [TrainAgent] initialized successfully.
+2025-10-18 19:16:47 | INFO | root | Memory loaded: patterns=1
+2025-10-18 19:16:47 | INFO | TrainAgent | [TrainAgent] initialized successfully.
+2025-10-18 19:16:47 | INFO | MetaAgent | [MetaAgent] Executing command: notion.list_tasks | args={}
+2025-10-18 19:16:47 | INFO | NotionAgent | [NotionAgent] Fetching last 5 tasks from Notion...
+2025-10-18 19:16:47 | INFO | httpx | HTTP Request: POST https://api.notion.com/v1/databases/28abfded001c8008ace0c0f93a3ba0af/query "HTTP/1.1 200 OK"
+2025-10-18 19:16:47 | INFO | NotionAgent | [NotionAgent] Retrieved 2 tasks successfully.
+2025-10-18 19:16:47 | INFO | MetaAgent | [MetaAgent] Command 'notion.list_tasks' executed successfully.
+2025-10-18 19:16:47 | INFO | MetaAgent | [MetaAgent] Executing command: train.run | args={}
+2025-10-18 19:16:47 | INFO | TrainAgent | [TRAIN] Starting training cycle...
+2025-10-18 19:16:47 | ERROR | TrainAgent | [TRAIN] Failed during training cycle: MemoryManager.save() takes 1 positional argument but 2 were given
+Traceback (most recent call last):
+  File "D:\AI_Empire_v1\AI_Empire_v1\agents\train_agent.py", line 32, in run_cycle
+    self.memory_manager.save(memory)
+TypeError: MemoryManager.save() takes 1 positional argument but 2 were given
+2025-10-18 19:16:47 | INFO | MetaAgent | [MetaAgent] Command 'train.run' executed successfully.
+2025-10-18 19:16:47 | INFO | root | Progress report written: storage/progress_report.json
+2025-10-18 19:21:23 | INFO | root | ✅ Logging initialized
+2025-10-18 19:21:23 | INFO | root | ✅ Logging initialized
+2025-10-18 19:21:23 | INFO | MetaAgent | [MetaAgent] initialized successfully.
+2025-10-18 19:21:23 | INFO | MetaAgent | [MetaAgent] initialized successfully.
+2025-10-18 19:21:23 | INFO | root | ✅ Logging initialized
+2025-10-18 19:21:23 | INFO | NotionAgent | [NotionAgent] initialized successfully.
+2025-10-18 19:21:23 | INFO | NotionAgent | [NotionAgent] initialized successfully.
+2025-10-18 19:21:23 | INFO | NotionAgent | [NotionAgent] Initializing and refreshing schema...
+2025-10-18 19:21:23 | INFO | NotionAgent | [NotionAgent] Fetching database schema...
+2025-10-18 19:21:25 | INFO | httpx | HTTP Request: GET https://api.notion.com/v1/databases/28abfded001c8008ace0c0f93a3ba0af "HTTP/1.1 200 OK"
+2025-10-18 19:21:25 | INFO | NotionAgent | [NotionAgent] Schema loaded successfully.
+2025-10-18 19:21:25 | INFO | root | ✅ Logging initialized
+2025-10-18 19:21:25 | INFO | TrainAgent | [TrainAgent] initialized successfully.
+2025-10-18 19:21:25 | INFO | root | Memory loaded: patterns=1
+2025-10-18 19:21:25 | INFO | TrainAgent | [TrainAgent] initialized successfully.
+2025-10-18 19:21:25 | INFO | MetaAgent | [MetaAgent] Executing command: notion.list_tasks | args={}
+2025-10-18 19:21:25 | INFO | NotionAgent | [NotionAgent] Fetching last 5 tasks from Notion...
+2025-10-18 19:21:26 | INFO | httpx | HTTP Request: POST https://api.notion.com/v1/databases/28abfded001c8008ace0c0f93a3ba0af/query "HTTP/1.1 200 OK"
+2025-10-18 19:21:26 | INFO | NotionAgent | [NotionAgent] Retrieved 2 tasks successfully.
+2025-10-18 19:21:26 | INFO | MetaAgent | [MetaAgent] Command 'notion.list_tasks' executed successfully.
+2025-10-18 19:21:26 | INFO | MetaAgent | [MetaAgent] Executing command: train.run | args={}
+2025-10-18 19:21:26 | INFO | TrainAgent | [TRAIN] Starting training cycle...
+2025-10-18 19:21:26 | ERROR | TrainAgent | [TRAIN] Failed during training cycle: MemoryManager.save() takes 1 positional argument but 2 were given
+Traceback (most recent call last):
+  File "D:\AI_Empire_v1\AI_Empire_v1\agents\train_agent.py", line 32, in run_cycle
+    self.memory_manager.save(memory)
+TypeError: MemoryManager.save() takes 1 positional argument but 2 were given
+2025-10-18 19:21:26 | INFO | MetaAgent | [MetaAgent] Command 'train.run' executed successfully.
+2025-10-18 19:21:26 | INFO | root | Progress report written: storage/progress_report.json
+2025-10-18 19:25:57 | INFO | root | ✅ Logging initialized
+2025-10-18 19:25:57 | INFO | MetaAgent | [MetaAgent] initialized successfully.
+2025-10-18 19:25:57 | INFO | MetaAgent | [MetaAgent] initialized successfully.
+2025-10-18 19:25:57 | INFO | NotionAgent | [NotionAgent] initialized successfully.
+2025-10-18 19:25:58 | INFO | NotionAgent | [NotionAgent] initialized successfully.
+2025-10-18 19:25:58 | INFO | NotionAgent | [NotionAgent] Initializing and refreshing schema...
+2025-10-18 19:25:58 | INFO | NotionAgent | [NotionAgent] Fetching database schema...
+2025-10-18 19:25:58 | INFO | httpx | HTTP Request: GET https://api.notion.com/v1/databases/28abfded001c8008ace0c0f93a3ba0af "HTTP/1.1 200 OK"
+2025-10-18 19:25:58 | INFO | NotionAgent | [NotionAgent] Schema loaded successfully.
+2025-10-18 19:25:58 | INFO | TrainAgent | [TrainAgent] initialized successfully.
+2025-10-18 19:25:58 | INFO | TrainAgent | [TrainAgent] initialized successfully.
+2025-10-18 19:25:58 | INFO | MetaAgent | [MetaAgent] Executing command: notion.list_tasks | args={}
+2025-10-18 19:25:58 | INFO | NotionAgent | [NotionAgent] Fetching last 5 tasks from Notion...
+2025-10-18 19:25:59 | INFO | httpx | HTTP Request: POST https://api.notion.com/v1/databases/28abfded001c8008ace0c0f93a3ba0af/query "HTTP/1.1 200 OK"
+2025-10-18 19:25:59 | INFO | NotionAgent | [NotionAgent] Retrieved 2 tasks successfully.
+2025-10-18 19:25:59 | INFO | MetaAgent | [MetaAgent] Command 'notion.list_tasks' executed successfully.
+2025-10-18 19:25:59 | INFO | MetaAgent | [MetaAgent] Executing command: train.run | args={}
+2025-10-18 19:25:59 | INFO | TrainAgent | [TRAIN] Starting training cycle...
+2025-10-18 19:25:59 | INFO | TrainAgent | [TRAIN] Training cycle completed successfully.
+2025-10-18 19:25:59 | INFO | MetaAgent | [MetaAgent] Command 'train.run' executed successfully.
+2025-10-18 19:25:59 | INFO | root | Progress report written: storage/progress_report.json
